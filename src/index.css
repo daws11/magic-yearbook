@@ -1,0 +1,63 @@
+@import "tailwindcss";
+
+:root {
+  font-family: Inter, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  width: 100%;
+  min-height: 100%;
+}
+
+body {
+  min-height: 100vh;
+  background: #050505;
+  color: #fff;
+}
+
+@keyframes float-drift {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes pulse-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.24);
+  }
+  50% {
+    box-shadow: 0 0 35px rgba(255, 255, 255, 0.45);
+  }
+}
+
+.float-drift {
+  animation: float-drift 8s ease-in-out infinite;
+}
+
+.pulse-glow {
+  animation: pulse-glow 2.2s ease-in-out infinite;
+}
+
+.grain-overlay {
+  background-image:
+    radial-gradient(rgba(255, 255, 255, 0.08) 0.7px, transparent 0.7px),
+    radial-gradient(rgba(255, 255, 255, 0.05) 0.6px, transparent 0.6px);
+  background-position:
+    0 0,
+    7px 11px;
+  background-size:
+    13px 13px,
+    17px 17px;
+}
