@@ -31,7 +31,7 @@ function PhotoGallery({ slides }) {
               <MotionImage
                 src={slide.src}
                 alt={slide.caption}
-                className="h-full w-full object-cover"
+                className="h-full w-full object-contain"
                 initial={{ scale: 1.06, x: isEven ? -14 : 14 }}
                 whileInView={{ scale: 1, x: 0 }}
                 transition={{ duration: 1.05, ease: 'easeOut' }}
