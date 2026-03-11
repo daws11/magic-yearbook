@@ -13,48 +13,28 @@ function App() {
   const [isMuted, setIsMuted] = useState(false)
   const [slides, setSlides] = useState([])
 
-  const slideCandidates = useMemo(
-    () => [
-      ...Array.from({ length: 92 }, (_, index) => {
-        const number = index + 1
-        return {
-          src: `/images/${number}.webp`,
-          caption: `Magic Yearbook ${number}`,
-        }
-      }),
-    ],
-    [],
-  )
-
   useEffect(() => {
     let cancelled = false
 
-    const isImageAvailable = (src) =>
-      new Promise((resolve) => {
-        const image = new Image()
-        image.onload = () => resolve(true)
-        image.onerror = () => resolve(false)
-        image.src = src
-      })
-
-    const resolveSlides = async () => {
-      const checks = await Promise.all(
-        slideCandidates.map(async (slide) => ({
-          slide,
-          exists: await isImageAvailable(slide.src),
-        })),
-      )
-
-      if (cancelled) return
-      setSlides(checks.filter((item) => item.exists).map((item) => item.slide))
+    const loadSlides = async () => {
+      try {
+        const res = await fetch('/media-list.json')
+        if (!res.ok) throw new Error('Failed to load media list')
+        const list = await res.json()
+        if (cancelled) return
+        setSlides(list)
+      } catch {
+        if (cancelled) return
+        setSlides([])
+      }
     }
 
-    resolveSlides()
+    loadSlides()
 
     return () => {
       cancelled = true
     }
-  }, [slideCandidates])
+  }, [])
 
   const handleEnter = () => {
     const audio = audioPlayerRef.current
@@ -78,7 +58,7 @@ function App() {
 
   return (
     <Layout>
-      <AudioPlayer audioRef={audioPlayerRef} src="/music/bgm.mp3" isPlaying={isPlaying} isMuted={!hasStarted || isMuted} />
+      <AudioPlayer audioRef={audioPlayerRef} src="/music/bgm-new.mp3" isPlaying={isPlaying} isMuted={!hasStarted || isMuted} />
       {slides.length > 0 ? (
         <>
           <SlideStage

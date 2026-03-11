@@ -5,11 +5,13 @@ import Controls from './Controls'
 const AUTOPLAY_MS = 5000
 const MotionDiv = motion.div
 const MotionImage = motion.img
+const MotionVideo = motion.video
 
 function SlideStage({ slides, isPlaying, isMuted, onTogglePlay, onToggleMute }) {
   const [currentIndex, setCurrentIndex] = useState(0)
 
   const currentSlide = slides[currentIndex]
+  const isVideo = currentSlide?.type === 'video'
 
   const goNext = () => {
     setCurrentIndex((prev) => (prev + 1) % slides.length)
@@ -33,7 +35,10 @@ function SlideStage({ slides, isPlaying, isMuted, onTogglePlay, onToggleMute }) 
         <MotionDiv
           key={`ambient-${currentSlide.src}`}
           className="absolute inset-0 scale-110 bg-cover bg-center blur-2xl"
-          style={{ backgroundImage: `url(${currentSlide.src})` }}
+          style={{
+            backgroundImage: isVideo ? undefined : `url(${currentSlide.src})`,
+            backgroundColor: isVideo ? '#0a0a0a' : undefined,
+          }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 0.62 }}
           exit={{ opacity: 0 }}
@@ -48,16 +53,32 @@ function SlideStage({ slides, isPlaying, isMuted, onTogglePlay, onToggleMute }) 
         <div className="relative h-full w-full max-w-6xl">
           <div className="absolute inset-0 flex items-center justify-center">
             <AnimatePresence mode="wait">
-              <MotionImage
-                key={currentSlide.src}
-                src={currentSlide.src}
-                alt={currentSlide.caption}
-                className="float-drift h-full max-h-[74vh] w-auto max-w-full rounded-xl object-contain shadow-[0_30px_80px_rgba(0,0,0,0.7)]"
-                initial={{ opacity: 0, scale: 0.94 }}
-                animate={{ opacity: 1, scale: 1.03 }}
-                exit={{ opacity: 0, scale: 0.97 }}
-                transition={{ duration: 0.95, ease: 'easeOut' }}
-              />
+              {isVideo ? (
+                <MotionVideo
+                  key={currentSlide.src}
+                  src={currentSlide.src}
+                  className="float-drift h-full max-h-[74vh] w-auto max-w-full rounded-xl object-contain shadow-[0_30px_80px_rgba(0,0,0,0.7)]"
+                  initial={{ opacity: 0, scale: 0.94 }}
+                  animate={{ opacity: 1, scale: 1.03 }}
+                  exit={{ opacity: 0, scale: 0.97 }}
+                  transition={{ duration: 0.95, ease: 'easeOut' }}
+                  autoPlay
+                  loop
+                  muted={isMuted}
+                  playsInline
+                />
+              ) : (
+                <MotionImage
+                  key={currentSlide.src}
+                  src={currentSlide.src}
+                  alt={currentSlide.caption}
+                  className="float-drift h-full max-h-[74vh] w-auto max-w-full rounded-xl object-contain shadow-[0_30px_80px_rgba(0,0,0,0.7)]"
+                  initial={{ opacity: 0, scale: 0.94 }}
+                  animate={{ opacity: 1, scale: 1.03 }}
+                  exit={{ opacity: 0, scale: 0.97 }}
+                  transition={{ duration: 0.95, ease: 'easeOut' }}
+                />
+              )}
             </AnimatePresence>
           </div>
 
